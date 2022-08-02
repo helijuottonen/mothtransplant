@@ -24,6 +24,7 @@ library(ggplot2) # v.3.3.5
 library(dplyr) # v. 1.0.8
 library(forcats) # v.0.5.1
 library(tidyr) # v. 1.2.0
+library(cowplot)
 
 #### ASV level bubbleplot
 
@@ -104,13 +105,15 @@ ps3_pba_asv <- mothps3_pba %>%
 
 ps3_pba_asv2 <- mutate(ps3_pba_asv, family2 = ifelse(OTU %in% mund, "Enteroc. mundtii", ifelse(OTU %in% cass, "Enteroc. cass/gall", Family)))
 
-fam_colors2 <- c("0319-6G20" = "#882E72", "Acetobacteraceae" = "#F6C141", "Anaerovoracaceae" = "#F6C141", "Bacillaceae" = "#F1932D", "Beijerinckiaceae" = "#B178A6", "Caulobacteraceae" = "darkgrey", "Chitinophagaceae" = "#D6C1DE", "Comamonadaceae" = "#1965B0", "Defluviicoccaceae" = "#777777", "Enterobacteriaceae" = "#DDD8EF", "Enterococcaceae" = "#D1E5F0", "Erysipelotrichaceae" =  "#4EB265", "env.OPS 17" = "#F1932D", "Lineage IV" = "#E8601C", "Nitrosomonadaceae" = "#777777", "Obscuribacteraceae" = "#F6C141", "Polyangiaceae" = "lightgrey", "Pseudomonadaceae" = "#F1932D", "Sphingomonadaceae" = "#90C987", "Staphylococcaceae" = "#CAE0AB", "Xanthobacteraceae" = "#F7EE55", "Actinomycetaceae" = "#F6C141", "Streptococcaceae" = "#CAE0AB", "Moraxellaceae" = "lightgrey", "Enteroc. mundtii" = "#92C5DE", "Enteroc. cass/gall" = "#6195CF")  
+fam_colors <- c("0319-6G20" = "#882E72", "Acetobacteraceae" = "#F6C141", "Anaerovoracaceae" = "#F6C141", "Bacillaceae" = "#F1932D", "Beijerinckiaceae" = "#B178A6", "Caulobacteraceae" = "darkgrey", "Chitinophagaceae" = "#D6C1DE", "Comamonadaceae" = "#1965B0", "Defluviicoccaceae" = "#777777", "Enterobacteriaceae" = "#DDD8EF", "Enterococcaceae" = "#D1E5F0", "Erysipelotrichaceae" =  "#4EB265", "env.OPS 17" = "#F1932D", "Lineage IV" = "#E8601C", "Nitrosomonadaceae" = "#777777", "Obscuribacteraceae" = "#F6C141", "Polyangiaceae" = "lightgrey", "Pseudomonadaceae" = "#F1932D", "Sphingomonadaceae" = "#90C987", "Staphylococcaceae" = "#CAE0AB", "Xanthobacteraceae" = "#F7EE55", "Actinomycetaceae" = "#F6C141", "Streptococcaceae" = "#CAE0AB", "Moraxellaceae" = "lightgrey", "Enteroc. mundtii" = "#92C5DE", "Enteroc. cass/gall" = "#6195CF")  
 
 # plot for frass before + after
 ps3_pba_asvplot <- ggplot(ps3_pba_asv2, aes(x = sample4, y = Abundance, fill = family2, label=OTU)) + 
   geom_bar(stat = "identity", color="white") +
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
   ylab("Relative abundance (ASV > 0.5%) \n") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_fill_manual(values = fam_colors, limits=force, name="Family") +
   theme_cowplot(11) + 
   facet_wrap(genotype ~ fct_relevel(transpl, "before", "transpl", "ctrl"), nrow=2, scales="free_x") +
   theme(axis.title.x = element_blank(), axis.text.x = element_blank(), axis.ticks.x = element_blank()) 
@@ -147,13 +150,13 @@ mothps3_diet <- subset_samples(mothps3s2, tissue == "Control_Diet" | tissue == "
 mothps3_diet
 
 # setting specific color to each family
-fam_colors <- c("0319-6G20" = "#882E72", "Acetobacteraceae" = "#F6C141", "Anaerovoracaceae" = "#F6C141", "Bacillaceae" = "#F1932D", "Beijerinckiaceae" = "#B178A6", "Caulobacteraceae" = "darkgrey", "Chitinophagaceae" = "#D6C1DE", "Comamonadaceae" = "#1965B0", "Defluviicoccaceae" = "#777777", "Enterobacteriaceae" = "#5289C7", "Enterococcaceae" = "#7BAFDE", "Erysipelotrichaceae" =  "#4EB265", "env.OPS 17" = "#F1932D", "Lineage IV" = "#E8601C", "Nitrosomonadaceae" = "#777777", "Obscuribacteraceae" = "#F6C141", "Polyangiaceae" = "lightgrey", "Pseudomonadaceae" = "#F1932D", "Sphingomonadaceae" = "#90C987", "Staphylococcaceae" = "#CAE0AB", "Xanthobacteraceae" = "#F7EE55", "Actinomycetaceae" = "#F6C141", "Streptococcaceae" = "#CAE0AB", "Moraxellaceae" = "lightgrey")
+#fam_colors <- c("0319-6G20" = "#882E72", "Acetobacteraceae" = "#F6C141", "Anaerovoracaceae" = "#F6C141", "Bacillaceae" = "#F1932D", "Beijerinckiaceae" = "#B178A6", "Caulobacteraceae" = "darkgrey", "Chitinophagaceae" = "#D6C1DE", "Comamonadaceae" = "#1965B0", "Defluviicoccaceae" = "#777777", "Enterobacteriaceae" = "#5289C7", "Enterococcaceae" = "#7BAFDE", "Erysipelotrichaceae" =  "#4EB265", "env.OPS 17" = "#F1932D", "Lineage IV" = "#E8601C", "Nitrosomonadaceae" = "#777777", "Obscuribacteraceae" = "#F6C141", "Polyangiaceae" = "lightgrey", "Pseudomonadaceae" = "#F1932D", "Sphingomonadaceae" = "#90C987", "Staphylococcaceae" = "#CAE0AB", "Xanthobacteraceae" = "#F7EE55", "Actinomycetaceae" = "#F6C141", "Streptococcaceae" = "#CAE0AB", "Moraxellaceae" = "lightgrey")
 
 # whole larvae: transforming data
 ps3_wL_asv <- mothps3_wL %>%
   transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
   psmelt() %>%                                         # Melt to long format
-  filter(Abundance > 0.000) %>%                  # Filter out low abundance taxa
+  filter(Abundance > 0.005) %>%                  # Filter out low abundance taxa
   arrange(Family) 
 
 # plot for whole larvae
@@ -163,10 +166,10 @@ ps3_wL_asvplot <- ggplot(ps3_wL_asv, aes(x = sample4, y = Abundance, fill = Fami
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
   ylab("Relative abundance (ASV > 0.5%) \n") +
   xlab("Genotype/family + sample ID") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   ggtitle("Whole larva") +
   theme_cowplot(11) + 
   theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
-  #theme(axis.text.x = element_text(angle = 90)) +
   facet_grid(cols = vars(genotype), scales="free_x", space="free")
 
 ps3_wL_asvplot
@@ -186,7 +189,7 @@ ps3_af_asvplot <- ggplot(ps3_af_asv2, aes(x = sample4, y = Abundance, fill = fam
   scale_fill_manual(values = fam_colors2, limits=force, name="Family") +
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
   ylab("Relative abundance (ASV > 0.5%) \n") +
-  xlab("Genotype/family + sample ID") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   ggtitle("Abdominal fluid") +
   theme_cowplot(11) + 
   theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
@@ -209,7 +212,7 @@ ps3_gut_asvplot <- ggplot(ps3_gut_asv2, aes(x = sample4, y = Abundance, fill = f
   scale_fill_manual(values = fam_colors2, limits=force, name="Family") +
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
   ylab("Relative abundance (ASV > 0.5%) \n") +
-  xlab("Genotype/family + sample ID") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   ggtitle("Adult gut") +
   theme_cowplot(11) + 
   theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
@@ -221,7 +224,7 @@ ps3_gut_asvplot
 ps3_diet_asv <- mothps3_diet %>%
   transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
   psmelt() %>%                                         # Melt to long format
-  filter(Abundance > 0.000) %>%                         # Filter out low abundance taxa
+  filter(Abundance > 0.005) %>%                         # Filter out low abundance taxa
   arrange(Family) 
 
 # plot for diet
@@ -230,10 +233,11 @@ ps3_diet_taxplot <- ggplot(ps3_diet_asv, aes(x = sample4, y = Abundance, fill = 
   scale_fill_manual(values = fam_colors, limits=force) +
   guides(fill = guide_legend(reverse = FALSE, keywidth = 1, keyheight = 1)) +
   ylab("Relative abundance (ASV > 0.5%) \n") +
-  xlab("Genotype/family + sample ID") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   ggtitle("Diet") +
   theme_cowplot(11) + 
   theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
   facet_grid(cols = vars(tissue), scales="free_x")
 
 ps3_diet_taxplot
+
